@@ -6,20 +6,11 @@ using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
-    public class UnixSocketHandler
+    public class ResponseGenerator
     {
-        public UnixSocketHandler()
+        public ResponseGenerator(UnixSocketEndpoint)
         {
 
         }
-
-
-        public void Start()
-        {
-        }
-        public void Stop()
-        {
-        }
-
     }
 }

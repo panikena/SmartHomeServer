@@ -65,14 +65,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProcessingUnit.cs" />
+    <Compile Include="CommandProcessor.cs" />
+    <Compile Include="CommandSource.cs" />
+    <Compile Include="IInputCommand.cs" />
+    <Compile Include="IOutputCommand.cs" />
+    <Compile Include="IProcessingResult.cs" />
+    <Compile Include="ProcessingModules\IModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponseGenerator.cs" />
     <Compile Include="SmartHomeDaemon.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UnixSocketHandler.cs" />
-    <Compile Include="WebSocketHandler.cs" />
+    <Compile Include="StrategyResolver.cs" />
+    <Compile Include="UnixSocketEndpoint.cs" />
+    <Compile Include="WebSocketEndpoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

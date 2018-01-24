@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
-    public class WebSocketHandler
+    public class WebSocketEndpoint
     {
         private WebSocketServer SocketServer { get; set; }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(WebSocketHandler));
+        private static readonly ILog log = LogManager.GetLogger(typeof(WebSocketEndpoint));
 
-        public WebSocketHandler()
+        public WebSocketEndpoint()
         {
             SocketServer = new WebSocketServer();
         }

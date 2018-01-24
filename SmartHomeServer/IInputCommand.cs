@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
-    public class ProcessingUnit
+    public interface IInputCommand
     {
+        CommandSource Source { get; }
+        int NodeID { get; }
+        string Command { get; set; }
     }
 }
