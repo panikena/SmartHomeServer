@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SmartHomeServer.InputMessages;
 
 namespace SmartHomeServer.ProcessingModules
 {
     public interface IModule
     {
-        Task<IProcessingResult> ProcessCommand();
+        IProcessingResult ProcessCommand(IInputMessage message);
     }
 }

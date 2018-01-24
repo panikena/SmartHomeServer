@@ -1,10 +1,8 @@
 ﻿using log4net;
+using SmartHomeServer.InputMessages;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
@@ -12,15 +10,16 @@ namespace SmartHomeServer
     public class WebSocketEndpoint
     {
         private WebSocketServer SocketServer { get; set; }
+        public Func<IInputMessage, Task> ProcessCommand { get; set; }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(WebSocketEndpoint));
+        private static readonly ILog log = LogManager.GetLogger("LOGGER");
 
         public WebSocketEndpoint()
         {
             SocketServer = new WebSocketServer();
         }
 
-        public void Start()
+        public void Open()
         {
             //Setup the appServer
             if (!SocketServer.Setup(2012)) //Setup with listening port
@@ -35,25 +34,39 @@ namespace SmartHomeServer
             //Try to start the appServer
             if (!SocketServer.Start())
             {
-                log.Error("Could not setup WebSocket server");
+                log.Error("Could not start WebSocket server");
                 return;
             }
 
-            log.Info("WebSocket server was started");
+            log.Info("WebSocket server was opened");
         }
 
-        public void Stop()
+        public void Close()
         {
             //Console.WriteLine("The server was stopped!");
             SocketServer.Stop();
-            log.Info("WebSocket server was stopped");
+            log.Info("WebSocket server was closed");
         }
 
-        private void OnMessageReceived(WebSocketSession session, string message)
+        private async void OnMessageReceived(WebSocketSession session, string message)
         {
             //Send the received message back
-            session.Send("Server: " + message);
+            //session.Send("Server: " + message);
+
+            var msg = new WebSocketMessage()
+            {
+                SocketSessionID = session.SessionID,
+                Message = message
+            };
+           await ProcessCommand(msg);
         }
+
+        public async Task SendMessage(string sessionId, string message)
+        {
+            var session = SocketServer.GetSessionByID(sessionId);
+            await Task.Run(() => session.Send(message));
+        }
+        
     
     }
 }

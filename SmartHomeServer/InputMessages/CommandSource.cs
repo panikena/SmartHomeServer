@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
-    public interface IInputCommand
+    public enum MessageSource
     {
-        CommandSource Source { get; }
-        int NodeID { get; }
-        string Command { get; set; }
+        UnixSocket = 1,
+        WebSocket = 2,
+        Scheduler = 3,
+        Internal = 4
     }
 }

@@ -66,10 +66,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessor.cs" />
-    <Compile Include="CommandSource.cs" />
-    <Compile Include="IInputCommand.cs" />
-    <Compile Include="IOutputCommand.cs" />
+    <Compile Include="InputMessages\CommandSource.cs" />
+    <Compile Include="InputMessages\IInputMessage.cs" />
+    <Compile Include="InputMessages\SmartBrickMessage.cs" />
+    <Compile Include="InputMessages\WebSocketMessage.cs" />
     <Compile Include="IProcessingResult.cs" />
+    <Compile Include="ISmartBrickCommand.cs" />
+    <Compile Include="ProcessingModules\EchoModule.cs" />
     <Compile Include="ProcessingModules\IModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,8 +81,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="StrategyResolver.cs" />
-    <Compile Include="UnixSocketEndpoint.cs" />
-    <Compile Include="WebSocketEndpoint.cs" />
+    <Compile Include="Endpoints\UnixSocketEndpoint.cs" />
+    <Compile Include="Endpoints\WebSocketEndpoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

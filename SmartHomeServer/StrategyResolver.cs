@@ -1,9 +1,5 @@
-﻿using SmartHomeServer.ProcessingModules;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SmartHomeServer.InputMessages;
+using SmartHomeServer.ProcessingModules;
 
 namespace SmartHomeServer
 {
@@ -14,8 +10,12 @@ namespace SmartHomeServer
 
         }
 
-        public IModule GetProcessingModule(IInputCommand command)
+        public IModule GetProcessingModule(IInputMessage message)
         {
+            if (message.Source == MessageSource.WebSocket)
+            {
+                return new EchoModule();
+            }
             return null;
         }
 

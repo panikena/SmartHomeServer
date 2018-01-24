@@ -6,8 +6,9 @@ namespace SmartHomeServer
 {
     public class SmartHomeDaemon : ServiceBase
     {   
-        private UnixSocketEndpoint UnixSocketHandler { get; set; }
-        private WebSocketEndpoint WebSocketHandler { get; set; }
+        private UnixSocketEndpoint UnixSocketEndpoint { get; set; }
+        private WebSocketEndpoint WebSocketEndpoint { get; set; }
+        private CommandProcessor CommandProcessor { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger("LOGGER");
 
@@ -22,13 +23,16 @@ namespace SmartHomeServer
         protected override void OnStart(string[] args)
         {
             log.Info("Starting SmartHomeDaemon...");
-            EventLog.WriteEntry("SmartHomeDaemon was started");
+            log.Info("SmartHomeDaemon was started");
 
-            UnixSocketHandler = new UnixSocketEndpoint();
-            UnixSocketHandler.Start();
 
-            WebSocketHandler = new WebSocketEndpoint();
-            WebSocketHandler.Start();
+            UnixSocketEndpoint = new UnixSocketEndpoint();
+            UnixSocketEndpoint.Open();
+
+            WebSocketEndpoint = new WebSocketEndpoint();
+            WebSocketEndpoint.Open();
+
+            CommandProcessor = new CommandProcessor(UnixSocketEndpoint, WebSocketEndpoint);
 
             log.Info("SmartHomeDaemon has started");
         }
@@ -37,8 +41,8 @@ namespace SmartHomeServer
         { 
             log.Info("Stopping SmartHomeDaemon...");
 
-            UnixSocketHandler.Stop();
-            WebSocketHandler.Stop();
+            UnixSocketEndpoint.Close();
+            WebSocketEndpoint.Close();
 
             log.Info("SmartHomeDaemon was stopped");
         }
