@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
@@ -19,13 +16,28 @@ namespace SmartHomeServer
 
         public async Task SendResponse(IProcessingResult result)
         {
-            if (result.SmartBrickCommand != null)
+            if (result.SmartBrickMessages != null)
             {
-                await UnixSocket.SendCommand(result.SmartBrickCommand);
+                var unixTasks = new List<Task>();
+
+                foreach (var message in result.SmartBrickMessages)
+                {
+                    unixTasks.Add(UnixSocket.SendCommand(message));
+                }
+                
+                await Task.WhenAll(unixTasks);
             }
-            if (result.WebMessage != null)
+                
+            if (result.WebSocketMessages != null)
             {
-                await WebSocket.SendMessage(result.SocketSessionID, result.WebMessage);
+                var webSocketTasks = new List<Task>();
+
+                foreach (var message in result.WebSocketMessages)
+                {
+                    webSocketTasks.Add(WebSocket.SendMessage(message.SocketSessionID, message.Message));
+                }
+
+                await Task.WhenAll(webSocketTasks);
             }
         }
     }

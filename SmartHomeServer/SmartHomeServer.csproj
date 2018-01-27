@@ -66,12 +66,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessor.cs" />
-    <Compile Include="InputMessages\CommandSource.cs" />
-    <Compile Include="InputMessages\IInputMessage.cs" />
-    <Compile Include="InputMessages\SmartBrickMessage.cs" />
-    <Compile Include="InputMessages\WebSocketMessage.cs" />
+    <Compile Include="Exceptions\NoModuleFoundException.cs" />
+    <Compile Include="Messages\CommandSource.cs" />
+    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Messages\SmartBrickMessage.cs" />
+    <Compile Include="Messages\WebSocketMessage.cs" />
     <Compile Include="IProcessingResult.cs" />
-    <Compile Include="ISmartBrickCommand.cs" />
     <Compile Include="ProcessingModules\EchoModule.cs" />
     <Compile Include="ProcessingModules\IModule.cs" />
     <Compile Include="Program.cs" />

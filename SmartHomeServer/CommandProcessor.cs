@@ -1,14 +1,13 @@
-﻿using SmartHomeServer.InputMessages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using log4net;
+using SmartHomeServer.Exceptions;
+using SmartHomeServer.Messages;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
     public class CommandProcessor
     {
+        private static readonly ILog log = LogManager.GetLogger("LOGGER");
         private ProcessingStrategyResolver StrategyFactory { get; set; }
         private ResponseGenerator ResponseGenerator { get; set; }
 
@@ -19,13 +18,18 @@ namespace SmartHomeServer
             webEndpoint.ProcessCommand = ProcessCommand;
         }
 
-        public async Task ProcessCommand(IInputMessage command)
+        public async Task ProcessCommand(IMessage command)
         {
-            var module = StrategyFactory.GetProcessingModule(command);
-
-            IProcessingResult result = await Task.Run(() => module.ProcessCommand(command));
-
-            await ResponseGenerator.SendResponse(result);
+            try
+            {
+                var module = await StrategyFactory.GetProcessingModule(command);
+                IProcessingResult result = await Task.Run(() => module.ProcessCommand(command));
+                await ResponseGenerator.SendResponse(result);
+            }
+            catch (NoModuleFoundException ex)
+            {
+                log.Error("", ex);
+            }
         }
     }
 }

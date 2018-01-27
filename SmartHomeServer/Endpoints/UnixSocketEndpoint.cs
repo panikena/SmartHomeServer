@@ -4,21 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SmartHomeServer.InputMessages;
+using SmartHomeServer.Messages;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SmartHomeServer
 {
-    public class UnixSocketEndpoint 
+    public class UnixSocketEndpoint
     {
+        private static byte[] _xteaKey { get; set; }
+
         private static readonly ILog log = LogManager.GetLogger("LOGGER");
 
-        public Func<IInputMessage, Task> ProcessCommand { get; set; }
+        public Func<IMessage, Task> ProcessCommand { get; set; }
 
         public UnixSocketEndpoint()
         {
-
+            _xteaKey = GetKey();
         }
+
+        private byte[] GetKey()
+        {
+            return null;
+        }
+
 
       
         public void Open()
@@ -35,43 +43,29 @@ namespace SmartHomeServer
             //decrypt
             byte[] decryptedPayload = payload;
             //deserialize
-            SmartBrickCommand brickCommand = null ;
+            SmartBrickMessage brickMessage = null;
             try
             {
-                System.IO.MemoryStream memoryStream = new System.IO.MemoryStream(decryptedPayload);
-
-                // create new BinaryFormatter
-                BinaryFormatter binaryFormatter
-                            = new BinaryFormatter();
-
-                // set memory stream position to starting point
-                memoryStream.Position = 0;
-
-                // Deserializes a stream into an object graph and return as a object.
-                brickCommand = (SmartBrickCommand)binaryFormatter.Deserialize(memoryStream);
+                brickMessage = SmartBrickMessage.Deserialize(decryptedPayload);
             }
             catch (Exception ex)
             {
                 log.Error("Error during deserialization", ex);
                 return;
             }
-            
-            //process
-            var msg = new SmartBrickMessage()
-            {
-                Payload = brickCommand
-            };
 
-            await ProcessCommand(msg);
+            await ProcessCommand(brickMessage);
         }
 
-        public async Task SendCommand(ISmartBrickCommand message)
+        public async Task SendCommand(SmartBrickMessage message)
         {
             //encrypt
 
             //serialize
-
+            byte[] data = message.Serialize();
             //send
+            await Task.Run(() => { return; });
+            
         }
     }
 }

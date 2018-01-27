@@ -1,5 +1,4 @@
 ﻿using log4net;
-using log4net.Repository.Hierarchy;
 using System.ServiceProcess;
 
 namespace SmartHomeServer

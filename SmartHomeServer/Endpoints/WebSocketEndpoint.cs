@@ -1,5 +1,5 @@
 ﻿using log4net;
-using SmartHomeServer.InputMessages;
+using SmartHomeServer.Messages;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
@@ -10,7 +10,7 @@ namespace SmartHomeServer
     public class WebSocketEndpoint
     {
         private WebSocketServer SocketServer { get; set; }
-        public Func<IInputMessage, Task> ProcessCommand { get; set; }
+        public Func<IMessage, Task> ProcessCommand { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger("LOGGER");
 
@@ -66,7 +66,5 @@ namespace SmartHomeServer
             var session = SocketServer.GetSessionByID(sessionId);
             await Task.Run(() => session.Send(message));
         }
-        
-    
     }
 }

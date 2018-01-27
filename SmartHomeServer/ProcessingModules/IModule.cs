@@ -1,9 +1,9 @@
-﻿using SmartHomeServer.InputMessages;
+﻿using SmartHomeServer.Messages;
 
 namespace SmartHomeServer.ProcessingModules
 {
     public interface IModule
     {
-        IProcessingResult ProcessCommand(IInputMessage message);
+        IProcessingResult ProcessCommand(IMessage message);
     }
 }

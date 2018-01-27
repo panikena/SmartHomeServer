@@ -1,5 +1,7 @@
-﻿using SmartHomeServer.InputMessages;
+﻿using SmartHomeServer.Messages;
 using SmartHomeServer.ProcessingModules;
+using System;
+using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
@@ -10,15 +12,16 @@ namespace SmartHomeServer
 
         }
 
-        public IModule GetProcessingModule(IInputMessage message)
+        public async Task<IModule> GetProcessingModule(IMessage message)
         {
-            if (message.Source == MessageSource.WebSocket)
-            {
-                return new EchoModule();
-            }
-            return null;
+            return await Task.Run<IModule>(() =>
+             {
+                 if (message.Source == MessageSource.WebSocket)
+                 {
+                     return new EchoModule();
+                 }
+                 throw new Exception("No module found");
+             });
         }
-
-
     }
 }

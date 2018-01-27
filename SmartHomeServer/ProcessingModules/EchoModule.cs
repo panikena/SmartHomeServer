@@ -1,14 +1,14 @@
-﻿using SmartHomeServer.InputMessages;
+﻿using SmartHomeServer.Messages;
 
 namespace SmartHomeServer.ProcessingModules
 {
     public class EchoModule : IModule
     {
-        public IProcessingResult ProcessCommand(IInputMessage command)
+        public IProcessingResult ProcessCommand(IMessage command)
         {
             var webSocketMessage = (WebSocketMessage)command;
             //no SmartBrick required
-            var result = new ProcessingResult(null, webSocketMessage.SocketSessionID, webSocketMessage.Message);
+            var result = new ProcessingResult(null, new WebSocketMessage[] { webSocketMessage });
             return result;
         }
     }
