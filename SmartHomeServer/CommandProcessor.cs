@@ -16,12 +16,14 @@ namespace SmartHomeServer
             StrategyFactory = new ProcessingStrategyResolver();
             ResponseGenerator = new ResponseGenerator(unixEndpoint, webEndpoint);
             webEndpoint.ProcessCommand = ProcessCommand;
+            unixEndpoint.ProcessCommand = ProcessCommand;
         }
 
         public async Task ProcessCommand(IMessage command)
         {
             try
             {
+                log.Info("Processing command from " + command.Source.ToString());
                 var module = await StrategyFactory.GetProcessingModule(command);
                 IProcessingResult result = await Task.Run(() => module.ProcessCommand(command));
                 await ResponseGenerator.SendResponse(result);

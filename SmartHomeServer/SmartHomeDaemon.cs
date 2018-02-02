@@ -22,18 +22,17 @@ namespace SmartHomeServer
         protected override void OnStart(string[] args)
         {
             log.Info("Starting SmartHomeDaemon...");
-            log.Info("SmartHomeDaemon was started");
-
 
             UnixSocketEndpoint = new UnixSocketEndpoint();
-            UnixSocketEndpoint.Open();
-
+            
             WebSocketEndpoint = new WebSocketEndpoint();
-            WebSocketEndpoint.Open();
 
             CommandProcessor = new CommandProcessor(UnixSocketEndpoint, WebSocketEndpoint);
 
-            log.Info("SmartHomeDaemon has started");
+            UnixSocketEndpoint.Open();
+            WebSocketEndpoint.Open();
+
+            log.Info("SmartHomeDaemon was started");
         }
 
         protected override void OnStop()

@@ -20,6 +20,10 @@ namespace SmartHomeServer
                  {
                      return new EchoModule();
                  }
+                 if (message.Source == MessageSource.UnixSocket)
+                 {
+                     return new TestUnixModule();
+                 }
                  throw new Exception("No module found");
              });
         }

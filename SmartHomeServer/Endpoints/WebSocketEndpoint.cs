@@ -3,12 +3,17 @@ using SmartHomeServer.Messages;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
     public class WebSocketEndpoint
     {
+
+        public static Dictionary<string, string> SocketDict = new Dictionary<string, string>();
+
+
         private WebSocketServer SocketServer { get; set; }
         public Func<IMessage, Task> ProcessCommand { get; set; }
 
@@ -50,8 +55,8 @@ namespace SmartHomeServer
 
         private async void OnMessageReceived(WebSocketSession session, string message)
         {
-            //Send the received message back
-            //session.Send("Server: " + message);
+            log.Info("WebSocket server was opened");
+            RegisterSocket(session.SessionID);
 
             var msg = new WebSocketMessage()
             {
@@ -59,6 +64,15 @@ namespace SmartHomeServer
                 Message = message
             };
            await ProcessCommand(msg);
+        }
+
+        private void RegisterSocket(string sessionId)
+        {
+            if (!SocketDict.ContainsKey("Web"))
+            {
+                SocketDict.Add("Web", sessionId);
+            }
+            
         }
 
         public async Task SendMessage(string sessionId, string message)

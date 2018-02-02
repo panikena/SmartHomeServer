@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
@@ -24,7 +25,6 @@ namespace SmartHomeServer
                 {
                     unixTasks.Add(UnixSocket.SendCommand(message));
                 }
-                
                 await Task.WhenAll(unixTasks);
             }
                 
@@ -32,7 +32,7 @@ namespace SmartHomeServer
             {
                 var webSocketTasks = new List<Task>();
 
-                foreach (var message in result.WebSocketMessages)
+                foreach (var message in result.WebSocketMessages.Where(x => x.SocketSessionID != null))
                 {
                     webSocketTasks.Add(WebSocket.SendMessage(message.SocketSessionID, message.Message));
                 }
