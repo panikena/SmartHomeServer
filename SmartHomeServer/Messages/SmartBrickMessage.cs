@@ -5,8 +5,8 @@ namespace SmartHomeServer.Messages
     public class SmartBrickMessage : IMessage
     {
         public MessageSource Source { get { return MessageSource.UnixSocket; } }
-        public short SmartBrickID { get; set; }
-        public short CommandCode { get; set; }
+        public byte SmartBrickID { get; set; }
+        public byte CommandCode { get; set; }
         public byte[] Payload { get; set; }
 
         public byte[] Serialize()
@@ -17,7 +17,10 @@ namespace SmartHomeServer.Messages
                 {
                     writer.Write(SmartBrickID);
                     writer.Write(CommandCode);
-                    writer.Write(Payload);
+                    if (Payload != null && Payload.Length > 0)
+                    {
+                        writer.Write(Payload);
+                    }
                 }
                 return m.ToArray();
             }
@@ -31,10 +34,10 @@ namespace SmartHomeServer.Messages
             {
                 using (BinaryReader reader = new BinaryReader(m))
                 {
-                    obj.SmartBrickID = reader.ReadInt16();
-                    obj.CommandCode = reader.ReadInt16();
-                    obj.Payload = new byte[32];
-                    reader.Read(obj.Payload, 0, 32);
+                    obj.SmartBrickID = reader.ReadByte();
+                    obj.CommandCode = reader.ReadByte();
+                    obj.Payload = new byte[30];
+                    reader.Read(obj.Payload, 0, 30);
                 }
             }
 

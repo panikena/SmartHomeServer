@@ -1,4 +1,5 @@
 ﻿using log4net;
+using System;
 using System.ServiceProcess;
 
 namespace SmartHomeServer
@@ -22,6 +23,8 @@ namespace SmartHomeServer
         protected override void OnStart(string[] args)
         {
             log.Info("Starting SmartHomeDaemon...");
+            AppDomain.CurrentDomain.UnhandledException +=
+        new UnhandledExceptionEventHandler(OnUnhandledException);
 
             UnixSocketEndpoint = new UnixSocketEndpoint();
             
@@ -44,5 +47,13 @@ namespace SmartHomeServer
 
             log.Info("SmartHomeDaemon was stopped");
         }
+
+
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            log.Error("An unhandled exception was thrown in " + sender.ToString(), (Exception)e.ExceptionObject);
+        }
+
+
     }
 }

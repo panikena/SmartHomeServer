@@ -17,22 +17,22 @@ namespace SmartHomeServer
 
         public async Task SendResponse(IProcessingResult result)
         {
-            if (result.SmartBrickMessages != null)
+            if (result.SmartBrickMessages != null && UnixSocket.IsRunning)
             {
                 var unixTasks = new List<Task>();
 
-                foreach (var message in result.SmartBrickMessages)
+                foreach (var message in result.SmartBrickMessages.Where(x => x != null))
                 {
                     unixTasks.Add(UnixSocket.SendCommand(message));
                 }
                 await Task.WhenAll(unixTasks);
             }
                 
-            if (result.WebSocketMessages != null)
+            if (result.WebSocketMessages != null && WebSocket.IsRunning)
             {
                 var webSocketTasks = new List<Task>();
 
-                foreach (var message in result.WebSocketMessages.Where(x => x.SocketSessionID != null))
+                foreach (var message in result.WebSocketMessages.Where(x => x != null && x.SocketSessionID != null))
                 {
                     webSocketTasks.Add(WebSocket.SendMessage(message.SocketSessionID, message.Message));
                 }

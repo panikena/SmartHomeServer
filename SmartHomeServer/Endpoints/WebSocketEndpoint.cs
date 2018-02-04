@@ -12,12 +12,19 @@ namespace SmartHomeServer
     {
 
         public static Dictionary<string, string> SocketDict = new Dictionary<string, string>();
-
-
+        
         private WebSocketServer SocketServer { get; set; }
         public Func<IMessage, Task> ProcessCommand { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger("LOGGER");
+
+        public bool IsRunning
+        {
+            get
+            {
+                return SocketServer.State == ServerState.Running;
+            }
+        }
 
         public WebSocketEndpoint()
         {
@@ -34,7 +41,7 @@ namespace SmartHomeServer
             }
 
             SocketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(OnMessageReceived);
-            
+            SocketServer.NewSessionConnected += new SessionHandler<WebSocketSession>(RegisterSocket);
 
             //Try to start the appServer
             if (!SocketServer.Start())
@@ -55,30 +62,40 @@ namespace SmartHomeServer
 
         private async void OnMessageReceived(WebSocketSession session, string message)
         {
-            log.Info("WebSocket server was opened");
-            RegisterSocket(session.SessionID);
-
             var msg = new WebSocketMessage()
             {
                 SocketSessionID = session.SessionID,
                 Message = message
             };
-           await ProcessCommand(msg);
+            await ProcessCommand(msg);
         }
 
-        private void RegisterSocket(string sessionId)
+        private void RegisterSocket(WebSocketSession session)
         {
+            log.Info("WebSocket server was opened");
+           
             if (!SocketDict.ContainsKey("Web"))
             {
-                SocketDict.Add("Web", sessionId);
+                SocketDict.Add("Web", session.SessionID);
             }
-            
+
         }
 
         public async Task SendMessage(string sessionId, string message)
         {
             var session = SocketServer.GetSessionByID(sessionId);
-            await Task.Run(() => session.Send(message));
+            if (session != null)
+            {
+                try
+                {
+                    await Task.Run(() => session.Send(message));
+                }
+                catch (TimeoutException ex)
+                {
+                    log.Error(string.Format("Timeout sending to socket {0}", session.SessionID));
+                }
+            }
+            
         }
     }
 }

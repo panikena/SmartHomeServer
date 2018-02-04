@@ -82,11 +82,10 @@ namespace SmartHomeServer
         }
     }
 
-
-
     public class UnixSocketEndpoint
     {
         private const int BUFFER_SIZE = 100;
+        private const int MAX_CLIENT_AMOUNT = 5;
 
         private static readonly ILog log = LogManager.GetLogger("LOGGER");
 
@@ -94,10 +93,38 @@ namespace SmartHomeServer
         private UnixEndPoint _endpoint { get; set; }
         private Socket _socket { get; set; }
         private const string SocketAddress = "/home/pi/projects/smartHome.sock";
+        private uint[] _xteaKey;
 
         private volatile bool _working;
         private volatile bool _receiving;
         private volatile bool _sending;
+
+        public bool IsRunning
+        {
+            get
+            {
+                if (!_working)
+                {
+                    return false;
+                }
+                try
+                {
+                    bool part1 = _socket.Poll(1000, SelectMode.SelectRead);
+                    bool part2 = (_socket.Available == 0);
+                    if (part1 && part2)
+                        return false;
+                    else
+                        return true;
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex.Message);
+                    return false;
+                }               
+                
+            }
+        }
+
 
         public Func<IMessage, Task> ProcessCommand { get; set; }
 
@@ -107,8 +134,14 @@ namespace SmartHomeServer
             _socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
             _socket.Blocking = false;
             _endpoint = new UnixEndPoint(SocketAddress);
-            //_xteaKey = GetKey();
+            _xteaKey = GetKey();
         }
+
+        private uint[] GetKey()
+        {
+            return null;
+        }
+
 
         public void Open()
         {
@@ -116,8 +149,7 @@ namespace SmartHomeServer
             {
                 _socket.Bind(_endpoint);
                 log.Info("Unix socket was opened");
-                //100 - some random number
-                _socket.Listen(100);
+                _socket.Listen(MAX_CLIENT_AMOUNT);
                 log.Info("Unix socket is listening");
                 Task.Run(() => AcceptConnection());
             }
@@ -164,15 +196,12 @@ namespace SmartHomeServer
                 {
                     byte[] data = new byte[BUFFER_SIZE];
                     _receiving = true;
-                    log.Info("Unix socket receiving");
                     if (_socket.Connected)
                     {
-                        var bytesReceived = await _socket.ReceiveTask(data, 0, BUFFER_SIZE, SocketFlags.None);
-                        log.Info("Unix socket received");
+                        var bytesReceived = await _socket.ReceiveTask(data, 0, BUFFER_SIZE, SocketFlags.None);                        
                         _receiving = false;
                         if (bytesReceived > 0)
                         {
-                            log.Info("Unix on msg received");
                             Task.Run(() => OnMessageReceived(data));
                         }
                     }
@@ -212,10 +241,22 @@ namespace SmartHomeServer
 
             //Wait for receive to complete
             //while (_receiving) ;
-            _sending = true;
-            //send
-            await _socket.SendTask(data, 0, data.Length, SocketFlags.None);
-            _sending = false;
+            try
+            {
+                _sending = true;
+                //send
+                await _socket.SendTask(data, 0, data.Length, SocketFlags.None);
+                _sending = false;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
+            }
+            finally
+            {
+                _sending = false;
+            }
+
 
         }
     }

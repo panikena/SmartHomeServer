@@ -14,7 +14,6 @@ namespace SmartHomeServer.ProcessingModules
 
         public IProcessingResult ProcessCommand(IMessage message)
         {
-            log.Info("In test unix");
             var unixMessage = new SmartBrickMessage()
             {
                 SmartBrickID = 1,
@@ -22,12 +21,24 @@ namespace SmartHomeServer.ProcessingModules
                 Payload = new byte[] { 1, 2, 3 }
             };
 
-            var webMessage = new WebSocketMessage()
+
+            string socket = null;
+            try {
+                socket = WebSocketEndpoint.SocketDict["Web"];
+            } catch (Exception ex)
             {
-                SocketSessionID = WebSocketEndpoint.SocketDict["Web"],
-                Message = "Test Unix!"
-            };
-            log.Info("WebSocket ID: "+ WebSocketEndpoint.SocketDict["Web"]);
+            }
+
+            WebSocketMessage webMessage = null;
+            if (socket != null)
+            {
+                webMessage = new WebSocketMessage()
+                {
+                    SocketSessionID = socket,
+                    Message = "Test Unix!"
+                };
+            }
+                      
 
 
             var result = new ProcessingResult(null, new WebSocketMessage[] { webMessage });

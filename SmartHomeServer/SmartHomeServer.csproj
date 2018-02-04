@@ -58,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -86,6 +87,7 @@
     <Compile Include="StrategyResolver.cs" />
     <Compile Include="Endpoints\UnixSocketEndpoint.cs" />
     <Compile Include="Endpoints\WebSocketEndpoint.cs" />
+    <Compile Include="XTEA.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
