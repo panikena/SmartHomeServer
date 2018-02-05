@@ -1,6 +1,7 @@
 ﻿using log4net;
 using SmartHomeServer.Exceptions;
 using SmartHomeServer.Messages;
+using System;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
@@ -19,7 +20,7 @@ namespace SmartHomeServer
             unixEndpoint.ProcessCommand = ProcessCommand;
         }
 
-        public async Task ProcessCommand(IMessage command)
+        public async void ProcessCommand(IMessage command)
         {
             try
             {
@@ -30,7 +31,11 @@ namespace SmartHomeServer
             }
             catch (NoModuleFoundException ex)
             {
-                log.Error("", ex);
+                log.Error("No module found", ex);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
             }
         }
     }

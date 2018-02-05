@@ -25,7 +25,10 @@ namespace SmartHomeServer
                 {
                     unixTasks.Add(UnixSocket.SendCommand(message));
                 }
-                await Task.WhenAll(unixTasks);
+                if (unixTasks.Any())
+                {
+                    await Task.WhenAll(unixTasks);
+                }
             }
                 
             if (result.WebSocketMessages != null && WebSocket.IsRunning)
@@ -36,8 +39,10 @@ namespace SmartHomeServer
                 {
                     webSocketTasks.Add(WebSocket.SendMessage(message.SocketSessionID, message.Message));
                 }
-
-                await Task.WhenAll(webSocketTasks);
+                if (webSocketTasks.Any())
+                {
+                    await Task.WhenAll(webSocketTasks);
+                }
             }
         }
     }
