@@ -14,7 +14,7 @@ namespace SmartHomeServer
         public static Dictionary<string, string> SocketDict = new Dictionary<string, string>();
 
         private WebSocketServer SocketServer { get; set; }
-        public Func<IMessage, Task> ProcessCommand { get; set; }
+        public Action<IMessage> ProcessCommand { get; set; }
 
         private static readonly ILog log = LogManager.GetLogger("LOGGER");
 
@@ -90,7 +90,7 @@ namespace SmartHomeServer
         public void SendMessage(string sessionId, string message)
         {
             var session = SocketServer.GetSessionByID(sessionId);
-            if (session != null)
+            if (session != null && session.Connected)
             {
                 try
                 {
@@ -98,7 +98,7 @@ namespace SmartHomeServer
                 }
                 catch (TimeoutException ex)
                 {
-                    log.Error(string.Format("Timeout sending to socket {0}", session.SessionID));
+                    log.Error(string.Format("Timeout sending to socket {0}", session.SessionID), ex);
                 }
             }
             

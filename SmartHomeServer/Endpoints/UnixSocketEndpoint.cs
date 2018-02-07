@@ -95,6 +95,9 @@ namespace SmartHomeServer
         private const string SocketAddress = "/home/pi/projects/smartHome.sock";
         private uint[] _xteaKey;
 
+        private delegate void MessageHandler(byte[] message);
+        private event MessageHandler MessageReceived;
+
         private volatile bool _working;
         private volatile bool _receiving;
         private volatile bool _sending;
@@ -126,7 +129,7 @@ namespace SmartHomeServer
         }
 
 
-        public Func<IMessage, Task> ProcessCommand { get; set; }
+        public Action<IMessage> ProcessCommand { get; set; }
 
 
         public UnixSocketEndpoint()
@@ -151,6 +154,9 @@ namespace SmartHomeServer
                 log.Info("Unix socket was opened");
                 _socket.Listen(MAX_CLIENT_AMOUNT);
                 log.Info("Unix socket is listening");
+
+                MessageReceived += OnMessageReceived;
+
                 Task.Run(() => AcceptConnection());
             }
             catch (Exception ex)
