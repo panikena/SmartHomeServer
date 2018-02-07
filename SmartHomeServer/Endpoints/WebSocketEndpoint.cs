@@ -42,7 +42,7 @@ namespace SmartHomeServer
 
             SocketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(OnMessageReceived);
             SocketServer.NewSessionConnected += new SessionHandler<WebSocketSession>(RegisterSocket);
-            //SocketServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>();
+            SocketServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>();
 
             //Try to start the appServer
             if (!SocketServer.Start())
@@ -73,16 +73,27 @@ namespace SmartHomeServer
                 Message = message
             };
             //Start thread for processing
-            Task.Run(async () => await ProcessCommand(msg));
+            Task.Run(() => ProcessCommand(msg));
         }
+
+        private void OnSessionClosed(WebSocketSession session, CloseReason reason)
+        {
+            log.Info("WebSocket server was opened");
+
+            if (SocketDict.ContainsKey(session.SessionID))
+            {
+                SocketDict.Remove(session.SessionID);
+            }
+        }
+
 
         private void RegisterSocket(WebSocketSession session)
         {
-            log.Info("WebSocket server was opened");
+            log.InfoFormat("WebSocket session was opened, session ID: {0}, {1}", session.SessionID, session.Connection);
            
-            if (!SocketDict.ContainsKey("Web"))
+            if (!SocketDict.ContainsKey(session.SessionID))
             {
-                SocketDict.Add("Web", session.SessionID);
+                SocketDict.Add(session.SessionID, "Web");
             }
 
         }

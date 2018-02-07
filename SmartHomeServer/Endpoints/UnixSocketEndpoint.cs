@@ -95,8 +95,6 @@ namespace SmartHomeServer
         private const string SocketAddress = "/home/pi/projects/smartHome.sock";
         private uint[] _xteaKey;
 
-        private delegate void MessageHandler(byte[] message);
-        private event MessageHandler MessageReceived;
 
         private volatile bool _working;
         private volatile bool _receiving;
@@ -154,8 +152,6 @@ namespace SmartHomeServer
                 log.Info("Unix socket was opened");
                 _socket.Listen(MAX_CLIENT_AMOUNT);
                 log.Info("Unix socket is listening");
-
-                MessageReceived += OnMessageReceived;
 
                 Task.Run(() => AcceptConnection());
             }
@@ -220,7 +216,7 @@ namespace SmartHomeServer
             }
         }
 
-        private async void OnMessageReceived(byte[] payload)
+        private void OnMessageReceived(byte[] payload)
         {
             //decrypt
             byte[] decryptedPayload = payload;
@@ -236,7 +232,7 @@ namespace SmartHomeServer
                 return;
             }
 
-            await ProcessCommand(brickMessage);
+            ProcessCommand(brickMessage);
         }
 
         public async Task SendCommand(SmartBrickMessage message)
@@ -245,9 +241,7 @@ namespace SmartHomeServer
 
             //serialize
             byte[] data = message.Serialize();
-
-            //Wait for receive to complete
-            //while (_receiving) ;
+            
             try
             {
                 _sending = true;

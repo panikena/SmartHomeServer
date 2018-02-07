@@ -1,4 +1,5 @@
-﻿using SmartHomeServer.Messages;
+﻿using log4net;
+using SmartHomeServer.Messages;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace SmartHomeServer
 {
     public class ResponseGenerator
     {
+        private static readonly ILog log = LogManager.GetLogger("LOGGER");
         private UnixSocketEndpoint UnixSocket { get; set; }
         private WebSocketEndpoint WebSocket { get; set; }
 
@@ -40,6 +42,7 @@ namespace SmartHomeServer
                 //Unix socket might close during processing
                 if (!UnixSocket.IsRunning)
                 {
+                    log.Warn("Unix socket was closed during sending");
                     return;
                 }
                 await UnixSocket.SendCommand(message);

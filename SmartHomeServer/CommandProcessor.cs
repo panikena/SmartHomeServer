@@ -2,7 +2,6 @@
 using SmartHomeServer.Exceptions;
 using SmartHomeServer.Messages;
 using System;
-using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
@@ -32,10 +31,6 @@ namespace SmartHomeServer
             catch (NoModuleFoundException ex)
             {
                 log.Error("No module found", ex);
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex.Message);
             }
             catch (Exception ex)
             {

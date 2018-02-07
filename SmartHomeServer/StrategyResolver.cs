@@ -1,7 +1,6 @@
 ﻿using SmartHomeServer.Messages;
 using SmartHomeServer.ProcessingModules;
 using System;
-using System.Threading.Tasks;
 
 namespace SmartHomeServer
 {
