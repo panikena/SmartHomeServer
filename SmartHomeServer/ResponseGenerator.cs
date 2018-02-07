@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SmartHomeServer.Messages;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,28 +18,42 @@ namespace SmartHomeServer
 
         public async Task SendResponse(IProcessingResult result)
         {
+            var sendingTasks = new Task[2];
+
             if (result.SmartBrickMessages != null && UnixSocket.IsRunning)
             {
-                var unixTasks = new List<Task>();
-
-                foreach (var message in result.SmartBrickMessages.Where(x => x != null))
-                {
-                    unixTasks.Add(UnixSocket.SendCommand(message));
-                }
-                await Task.WhenAll(unixTasks);
+                sendingTasks[0] = SendUnixSocketMessages(result.SmartBrickMessages);
             }
-                
             if (result.WebSocketMessages != null && WebSocket.IsRunning)
             {
-                var webSocketTasks = new List<Task>();
+                sendingTasks[1] = SendWebSocketMessages(result.WebSocketMessages);
+            }
 
-                foreach (var message in result.WebSocketMessages.Where(x => x != null && x.SocketSessionID != null))
+            await Task.WhenAll(sendingTasks);
+        }
+
+
+        private async Task SendUnixSocketMessages(IEnumerable<SmartBrickMessage> messages)
+        {
+            foreach (var message in messages.Where(x => x != null))
+            {
+                //Unix socket might close during processing
+                if (!UnixSocket.IsRunning)
                 {
-                    webSocketTasks.Add(WebSocket.SendMessage(message.SocketSessionID, message.Message));
+                    return;
                 }
-
-                await Task.WhenAll(webSocketTasks);
+                await UnixSocket.SendCommand(message);
             }
         }
+
+        private async Task SendWebSocketMessages(IEnumerable<WebSocketMessage> messages)
+        {
+            foreach (var message in messages.Where(x => x != null && x.SocketSessionID != null))
+            {
+                await Task.Run(() => WebSocket.SendMessage(message.SocketSessionID, message.Message));
+            }
+        }
+
+
     }
 }

@@ -202,6 +202,7 @@ namespace SmartHomeServer
                         _receiving = false;
                         if (bytesReceived > 0)
                         {
+                            //Start thread for processing
                             Task.Run(() => OnMessageReceived(data));
                         }
                     }

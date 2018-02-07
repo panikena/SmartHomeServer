@@ -12,7 +12,7 @@ namespace SmartHomeServer
     {
 
         public static Dictionary<string, string> SocketDict = new Dictionary<string, string>();
-        
+
         private WebSocketServer SocketServer { get; set; }
         public Func<IMessage, Task> ProcessCommand { get; set; }
 
@@ -42,6 +42,7 @@ namespace SmartHomeServer
 
             SocketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(OnMessageReceived);
             SocketServer.NewSessionConnected += new SessionHandler<WebSocketSession>(RegisterSocket);
+            //SocketServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>();
 
             //Try to start the appServer
             if (!SocketServer.Start())
@@ -55,19 +56,24 @@ namespace SmartHomeServer
 
         public void Close()
         {
-            //Console.WriteLine("The server was stopped!");
+            foreach (var session in SocketServer.GetAllSessions())
+            {
+                session.CloseWithHandshake("Server is stopping");
+            }
             SocketServer.Stop();
+
             log.Info("WebSocket server was closed");
         }
 
-        private async void OnMessageReceived(WebSocketSession session, string message)
+        private void OnMessageReceived(WebSocketSession session, string message)
         {
             var msg = new WebSocketMessage()
             {
                 SocketSessionID = session.SessionID,
                 Message = message
             };
-            await ProcessCommand(msg);
+            //Start thread for processing
+            Task.Run(async () => await ProcessCommand(msg));
         }
 
         private void RegisterSocket(WebSocketSession session)
@@ -81,14 +87,14 @@ namespace SmartHomeServer
 
         }
 
-        public async Task SendMessage(string sessionId, string message)
+        public void SendMessage(string sessionId, string message)
         {
             var session = SocketServer.GetSessionByID(sessionId);
             if (session != null)
             {
                 try
                 {
-                    await Task.Run(() => session.Send(message));
+                    session.Send(message);
                 }
                 catch (TimeoutException ex)
                 {

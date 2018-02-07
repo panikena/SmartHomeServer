@@ -1,6 +1,7 @@
 ﻿using log4net;
 using SmartHomeServer.Exceptions;
 using SmartHomeServer.Messages;
+using System;
 using System.Threading.Tasks;
 
 namespace SmartHomeServer
@@ -24,13 +25,17 @@ namespace SmartHomeServer
             try
             {
                 log.Info("Processing command from " + command.Source.ToString());
-                var module = await StrategyFactory.GetProcessingModule(command);
-                IProcessingResult result = await Task.Run(() => module.ProcessCommand(command));
+                var module = StrategyFactory.GetProcessingModule(command);
+                IProcessingResult result = module.ProcessCommand(command);
                 await ResponseGenerator.SendResponse(result);
             }
             catch (NoModuleFoundException ex)
             {
                 log.Error("", ex);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Unexpected exception", ex);
             }
         }
     }

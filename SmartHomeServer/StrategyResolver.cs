@@ -12,20 +12,17 @@ namespace SmartHomeServer
 
         }
 
-        public async Task<IModule> GetProcessingModule(IMessage message)
+        public IModule GetProcessingModule(IMessage message)
         {
-            return await Task.Run<IModule>(() =>
-             {
-                 if (message.Source == MessageSource.WebSocket)
-                 {
-                     return new EchoModule();
-                 }
-                 if (message.Source == MessageSource.UnixSocket)
-                 {
-                     return new TestUnixModule();
-                 }
-                 throw new Exception("No module found");
-             });
+            if (message.Source == MessageSource.WebSocket)
+            {
+                return new EchoModule();
+            }
+            if (message.Source == MessageSource.UnixSocket)
+            {
+                return new TestUnixModule();
+            }
+            throw new Exception("No module found"); 
         }
     }
 }
