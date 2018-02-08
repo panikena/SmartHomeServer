@@ -25,22 +25,30 @@ namespace SmartHomeServer
 
 		public async Task SendResponse(IProcessingResult result)
         {
-            var sendingTasks = new Task[2];
+#if DEBUG
+			if (result.WebSocketMessages != null && WebSocket.IsRunning)
+			{
+				var sendingTask = SendWebSocketMessages(result.WebSocketMessages);
+				await Task.WhenAll(sendingTask);
+			}
+#else
+			var sendingTasks = new Task[2];
 
-            if (result.SmartBrickMessages != null && UnixSocket.IsRunning)
-            {
-                sendingTasks[0] = SendUnixSocketMessages(result.SmartBrickMessages);
-            }
-            if (result.WebSocketMessages != null && WebSocket.IsRunning)
+			if (result.SmartBrickMessages != null && UnixSocket.IsRunning)
+			{
+				sendingTasks[0] = SendUnixSocketMessages(result.SmartBrickMessages);
+			}
+			if (result.WebSocketMessages != null && WebSocket.IsRunning)
             {
                 sendingTasks[1] = SendWebSocketMessages(result.WebSocketMessages);
             }
 
             await Task.WhenAll(sendingTasks);
-        }
+#endif
+		}
 
 
-        private async Task SendUnixSocketMessages(IEnumerable<SmartBrickMessage> messages)
+		private async Task SendUnixSocketMessages(IEnumerable<SmartBrickMessage> messages)
         {
             foreach (var message in messages.Where(x => x != null))
             {
