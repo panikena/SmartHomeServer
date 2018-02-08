@@ -12,24 +12,27 @@ namespace SmartHomeServer
         private UnixSocketEndpoint UnixSocket { get; set; }
         private WebSocketEndpoint WebSocket { get; set; }
 
+
+#if WINDEBUG
+        public ResponseGenerator(WebSocketEndpoint webSocket)
+		{
+			WebSocket = webSocket;
+		}
+#else
         public ResponseGenerator(UnixSocketEndpoint unixSocket, WebSocketEndpoint webSocket)
         {
             UnixSocket = unixSocket;
             WebSocket = webSocket;
         }
+#endif
 
-		public ResponseGenerator(WebSocketEndpoint webSocket)
-		{
-			WebSocket = webSocket;
-		}
-
-		public async Task SendResponse(IProcessingResult result)
+        public async Task SendResponse(IProcessingResult result)
         {
-#if DEBUG
+#if WINDEBUG
 			if (result.WebSocketMessages != null && WebSocket.IsRunning)
 			{
 				var sendingTask = SendWebSocketMessages(result.WebSocketMessages);
-				await Task.WhenAll(sendingTask);
+				await sendingTask;
 			}
 #else
 			var sendingTasks = new Task[2];
@@ -64,12 +67,14 @@ namespace SmartHomeServer
 
         private async Task SendWebSocketMessages(IEnumerable<WebSocketMessage> messages)
         {
+            var tasks = new List<Task>();
+
             foreach (var message in messages.Where(x => x != null && x.SocketSessionID != null))
             {
-                await Task.Run(() => WebSocket.SendMessage(message.SocketSessionID, message.Message));
+                tasks.Add(Task.Run(() => WebSocket.SendMessage(message.SocketSessionID, message.Message)));
             }
+
+            await Task.WhenAll(tasks);
         }
-
-
     }
 }

@@ -11,6 +11,14 @@ namespace SmartHomeServer
         private ProcessingStrategyResolver StrategyFactory { get; set; }
         private ResponseGenerator ResponseGenerator { get; set; }
 
+#if WINDEBUG
+        public CommandProcessor(WebSocketEndpoint webEndpoint)
+        {
+            StrategyFactory = new ProcessingStrategyResolver();
+            ResponseGenerator = new ResponseGenerator(webEndpoint);
+            webEndpoint.ProcessCommand = ProcessCommand;
+        }
+#else
         public CommandProcessor(UnixSocketEndpoint unixEndpoint, WebSocketEndpoint webEndpoint)
         {
             StrategyFactory = new ProcessingStrategyResolver();
@@ -18,15 +26,10 @@ namespace SmartHomeServer
             webEndpoint.ProcessCommand = ProcessCommand;
             unixEndpoint.ProcessCommand = ProcessCommand;
         }
+#endif
 
-		public CommandProcessor(WebSocketEndpoint webEndpoint)
-		{
-			StrategyFactory = new ProcessingStrategyResolver();
-			ResponseGenerator = new ResponseGenerator(webEndpoint);
-			webEndpoint.ProcessCommand = ProcessCommand;
-		}
 
-		public async void ProcessCommand(IMessage command)
+        public async void ProcessCommand(IMessage command)
         {
             try
             {

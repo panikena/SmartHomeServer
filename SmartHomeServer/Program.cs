@@ -6,7 +6,7 @@ namespace SmartHomeServer
     {
         static void Main(string[] args)
         {
-#if DEBUG
+#if WINDEBUG
 	        var smartHomeservice =  new SmartHomeDaemon();
 			smartHomeservice.OnDebug();
 			System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);

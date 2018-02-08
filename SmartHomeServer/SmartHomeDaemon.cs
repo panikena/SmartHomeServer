@@ -26,19 +26,22 @@ namespace SmartHomeServer
             AppDomain.CurrentDomain.UnhandledException +=
 				new UnhandledExceptionEventHandler(OnUnhandledException);
 
-#if DEBUG
-			WebSocketEndpoint = new WebSocketEndpoint();
+
+            WebSocketEndpoint = new WebSocketEndpoint();
+
+#if WINDEBUG
 			CommandProcessor = new CommandProcessor(WebSocketEndpoint);
-			WebSocketEndpoint.Open();
+			
 #else
-			UnixSocketEndpoint = new UnixSocketEndpoint();
-			WebSocketEndpoint = new WebSocketEndpoint();
+            UnixSocketEndpoint = new UnixSocketEndpoint();
             CommandProcessor = new CommandProcessor(UnixSocketEndpoint, WebSocketEndpoint);
 
             UnixSocketEndpoint.Open();
-            WebSocketEndpoint.Open();
 #endif
-			log.Info("SmartHomeDaemon was started");
+
+            WebSocketEndpoint.Open();
+
+            log.Info("SmartHomeDaemon was started");
         }
 
         protected override void OnStop()
