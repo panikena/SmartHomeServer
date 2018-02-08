@@ -24,18 +24,21 @@ namespace SmartHomeServer
         {
             log.Info("Starting SmartHomeDaemon...");
             AppDomain.CurrentDomain.UnhandledException +=
-        new UnhandledExceptionEventHandler(OnUnhandledException);
+				new UnhandledExceptionEventHandler(OnUnhandledException);
 
-            UnixSocketEndpoint = new UnixSocketEndpoint();
-            
-            WebSocketEndpoint = new WebSocketEndpoint();
-
+#if DEBUG
+			WebSocketEndpoint = new WebSocketEndpoint();
+			CommandProcessor = new CommandProcessor(WebSocketEndpoint);
+			WebSocketEndpoint.Open();
+#else
+			UnixSocketEndpoint = new UnixSocketEndpoint();
+			WebSocketEndpoint = new WebSocketEndpoint();
             CommandProcessor = new CommandProcessor(UnixSocketEndpoint, WebSocketEndpoint);
 
             UnixSocketEndpoint.Open();
             WebSocketEndpoint.Open();
-
-            log.Info("SmartHomeDaemon was started");
+#endif
+			log.Info("SmartHomeDaemon was started");
         }
 
         protected override void OnStop()
@@ -54,6 +57,9 @@ namespace SmartHomeServer
             log.Error("An unhandled exception was thrown in " + sender.ToString(), (Exception)e.ExceptionObject);
         }
 
-
-    }
+		public void OnDebug()
+		{
+			OnStart(null);
+		}
+	}
 }
