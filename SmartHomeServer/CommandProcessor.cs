@@ -19,7 +19,14 @@ namespace SmartHomeServer
             unixEndpoint.ProcessCommand = ProcessCommand;
         }
 
-        public async void ProcessCommand(IMessage command)
+		public CommandProcessor(WebSocketEndpoint webEndpoint)
+		{
+			StrategyFactory = new ProcessingStrategyResolver();
+			ResponseGenerator = new ResponseGenerator(webEndpoint);
+			webEndpoint.ProcessCommand = ProcessCommand;
+		}
+
+		public async void ProcessCommand(IMessage command)
         {
             try
             {

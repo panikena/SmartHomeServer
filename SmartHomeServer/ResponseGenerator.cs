@@ -18,7 +18,12 @@ namespace SmartHomeServer
             WebSocket = webSocket;
         }
 
-        public async Task SendResponse(IProcessingResult result)
+		public ResponseGenerator(WebSocketEndpoint webSocket)
+		{
+			WebSocket = webSocket;
+		}
+
+		public async Task SendResponse(IProcessingResult result)
         {
             var sendingTasks = new Task[2];
 
