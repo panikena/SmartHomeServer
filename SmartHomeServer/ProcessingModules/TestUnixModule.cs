@@ -1,6 +1,7 @@
 ﻿using System;
 using SmartHomeServer.Messages;
 using log4net;
+using System.Linq;
 
 namespace SmartHomeServer.ProcessingModules
 {
@@ -20,7 +21,7 @@ namespace SmartHomeServer.ProcessingModules
 
             string socket = null;
             try {
-                socket = WebSocketEndpoint.SocketDict["Web"];
+                socket = WebSocketEndpoint.SocketDict.First().Key;
             } catch (Exception ex)
             {
             }

@@ -140,6 +140,7 @@ namespace SmartHomeServer
 
         private uint[] GetKey()
         {
+            //TO DO: implement key fetching
             return null;
         }
 

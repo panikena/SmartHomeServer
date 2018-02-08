@@ -42,7 +42,7 @@ namespace SmartHomeServer
 
             SocketServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(OnMessageReceived);
             SocketServer.NewSessionConnected += new SessionHandler<WebSocketSession>(RegisterSocket);
-            SocketServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>();
+            SocketServer.SessionClosed += new SessionHandler<WebSocketSession, CloseReason>(OnSessionClosed);
 
             //Try to start the appServer
             if (!SocketServer.Start())
