@@ -1,15 +1,37 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SmartHomeServer.Messages
 {
     public class SmartBrickMessage : IMessage
     {
         public MessageSource Source { get { return MessageSource.UnixSocket; } }
+
+
+        private byte[] _pipeAddress;
+        public byte[] PipeAddress
+        {
+            get
+            {
+                return _pipeAddress;
+            }
+            set
+            {
+                if (value.Length != 5)
+                {
+                    throw new ArgumentException("Pipe must consist of 5 bytes");
+                }
+                else
+                {
+                    _pipeAddress = value;
+                }
+            }
+        }
         public byte SmartBrickID { get; set; }
         public byte CommandCode { get; set; }
         public byte[] Payload { get; set; }
 
-        public byte[] Serialize()
+        public byte[] SerializeData()
         {
             using (MemoryStream m = new MemoryStream())
             {
@@ -26,7 +48,7 @@ namespace SmartHomeServer.Messages
             }
         }
 
-        public static SmartBrickMessage Deserialize(byte []array)
+        public static SmartBrickMessage DeserializeData(byte []array)
         {
             var obj = new SmartBrickMessage();
 

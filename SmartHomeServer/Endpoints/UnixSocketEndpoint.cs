@@ -225,7 +225,7 @@ namespace SmartHomeServer
             SmartBrickMessage brickMessage = null;
             try
             {
-                brickMessage = SmartBrickMessage.Deserialize(decryptedPayload);
+                brickMessage = SmartBrickMessage.DeserializeData(decryptedPayload);
             }
             catch (Exception ex)
             {
@@ -238,16 +238,22 @@ namespace SmartHomeServer
 
         public async Task SendCommand(SmartBrickMessage message)
         {
+            //serialize 
+            byte[] data = message.SerializeData();
+            
             //encrypt
 
-            //serialize
-            byte[] data = message.Serialize();
+            //pack
+            var sockMsg = new List<byte>();
+            sockMsg.AddRange(message.PipeAddress);
+
+            sockMsg.AddRange(data);
             
             try
             {
                 _sending = true;
                 //send
-                await _socket.SendTask(data, 0, data.Length, SocketFlags.None);
+                await _socket.SendTask(sockMsg.ToArray(), 0, sockMsg.Count, SocketFlags.None);
                 _sending = false;
             }
             catch (Exception ex)
