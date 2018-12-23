@@ -167,7 +167,9 @@ namespace SmartHomeServer
             try
             {
                 _working = false;
-                _socket.DisconnectTask(false).Wait();
+
+                _socket.Shutdown(SocketShutdown.Both);
+                _socket.Close();                
                 _socket.Dispose();
                 log.Info("Unix socket was closed");
             }
