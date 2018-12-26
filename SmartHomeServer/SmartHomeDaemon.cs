@@ -46,33 +46,33 @@ namespace SmartHomeServer
             log.Info("SmartHomeDaemon was started");
 
             // Catch SIGINT and SIGUSR1
-            UnixSignal[] signals = new UnixSignal[] {
-                //SIGINT interrupts on Ctrl+C, this is for console debugging
-                new UnixSignal (Mono.Unix.Native.Signum.SIGINT),
-                new UnixSignal (Mono.Unix.Native.Signum.SIGTERM),
-            };
+            //UnixSignal[] signals = new UnixSignal[] {
+            //    //SIGINT interrupts on Ctrl+C, this is for console debugging
+            //    new UnixSignal (Mono.Unix.Native.Signum.SIGINT),
+            //    new UnixSignal (Mono.Unix.Native.Signum.SIGTERM),
+            //};
 
-            //Run this thread to handle POSIX signals and terminate gracefully
-            Thread signalThread = new Thread(delegate ()
-            {
-                int index;
-                while (true)
-                {
-                    // Wait for a signal to be delivered
-                    //-1 means "wait indefinitely"
-                    index = UnixSignal.WaitAny(signals, -1);
+            ////Run this thread to handle POSIX signals and terminate gracefully
+            //Thread signalThread = new Thread(delegate ()
+            //{
+            //    int index;
+            //    while (true)
+            //    {
+            //        // Wait for a signal to be delivered
+            //        //-1 means "wait indefinitely"
+            //        index = UnixSignal.WaitAny(signals, -1);
 
-                    Mono.Unix.Native.Signum signal = signals[index].Signum;
+            //        Mono.Unix.Native.Signum signal = signals[index].Signum;
 
-                    if (signal == Mono.Unix.Native.Signum.SIGTERM || signal == Mono.Unix.Native.Signum.SIGINT)
-                    {
-                        OnStop();
-                    }
+            //        if (signal == Mono.Unix.Native.Signum.SIGTERM || signal == Mono.Unix.Native.Signum.SIGINT)
+            //        {
+            //            OnStop();
+            //        }
                     
-                }
-            });
+            //    }
+            //});
 
-            signalThread.Start();
+            //signalThread.Start();
         }
 
 

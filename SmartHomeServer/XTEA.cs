@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeServer
+namespace Playground
 {
 
     public static class XTEA
@@ -53,18 +53,28 @@ namespace SmartHomeServer
         /// <returns></returns>
         public static byte[] Encrypt(byte[] data, byte[] key)
         {
+            if (data.Length > 255)
+            {
+                throw new ArgumentException("This encryption method is optimized to encrypt up to 255 bytes, please refactor");
+            }
+
+
             var keyBuffer = CreateKey(key);
             var blockBuffer = new uint[2];
-            var result = new byte[NextMultipleOf8(data.Length + 4)];
-            var lengthBuffer = BitConverter.GetBytes(data.Length);
-            Array.Copy(lengthBuffer, result, lengthBuffer.Length);
-            Array.Copy(data, 0, result, lengthBuffer.Length, data.Length);
+            //result size array is a size of data and 1 byte for data length value casted to multiple of 8 number
+            var result = new byte[NextMultipleOf8(data.Length + 1)];
+
+            //append data length value to the start of encrypted array
+            result[0] = (byte)data.Length;
+            //append data to the encrypted array; offset by one so result[0] is not overwritten
+            Array.Copy(data, 0, result, 1, data.Length);
             using (var stream = new MemoryStream(result))
             {
                 using (var writer = new BinaryWriter(stream))
                 {
                     for (int i = 0; i < result.Length; i += 8)
                     {
+                        //encrypt data by 2 x 4 bytes (32 bits) = 64 bits (equals to cipher length, 64 bits) blocks
                         blockBuffer[0] = BitConverter.ToUInt32(result, i);
                         blockBuffer[1] = BitConverter.ToUInt32(result, i + 4);
                         Encrypt(Rounds, blockBuffer, keyBuffer);
@@ -106,17 +116,17 @@ namespace SmartHomeServer
                 }
             }
             // verify valid length
-            var length = BitConverter.ToUInt32(buffer, 0);
-            if (length > buffer.Length - 4) throw new ArgumentException("Invalid encrypted data");
+            var length = buffer[0];
+            if (length > buffer.Length - 1) throw new ArgumentException("Invalid encrypted data");
             var result = new byte[length];
-            Array.Copy(buffer, 4, result, 0, length);
+            Array.Copy(buffer, 1, result, 0, length);
             return result;
         }
 
         private static int NextMultipleOf8(int length)
         {
             // XTEA is a 64-bit block chiffre, therefore our data must be a multiple of 64 bit
-            return (length + 7) / 8 * 8; // this will give us the next multiple of 8
+            return ((length + 7) / 8) * 8; // this will give us the next multiple of 8
         }
 
         /// <summary>

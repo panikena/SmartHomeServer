@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 
 namespace SmartHomeServer.Messages
@@ -65,6 +66,5 @@ namespace SmartHomeServer.Messages
 
             return obj;
         }
-
     }
 }

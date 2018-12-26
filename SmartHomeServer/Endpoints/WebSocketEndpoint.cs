@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Newtonsoft.Json;
 using SmartHomeServer.Messages;
 using SuperSocket.SocketBase;
 using SuperSocket.WebSocket;
@@ -67,10 +68,13 @@ namespace SmartHomeServer
 
         private void OnMessageReceived(WebSocketSession session, string message)
         {
+            var payload = JsonConvert.DeserializeObject<WebSocketPayload>(message);
+
             var msg = new WebSocketMessage()
             {
                 SocketSessionID = session.SessionID,
-                Message = message
+                Message = payload.Message,
+                WidgetID = payload.WidgetID
             };
             //Start thread for processing
             Task.Run(() => ProcessCommand(msg));

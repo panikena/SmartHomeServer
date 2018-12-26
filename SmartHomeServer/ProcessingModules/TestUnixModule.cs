@@ -2,6 +2,8 @@
 using SmartHomeServer.Messages;
 using log4net;
 using System.Linq;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace SmartHomeServer.ProcessingModules
 {
@@ -11,34 +13,22 @@ namespace SmartHomeServer.ProcessingModules
 
         public IProcessingResult ProcessCommand(IMessage message)
         {
-            var unixMessage = new SmartBrickMessage()
-            {
-                SmartBrickID = 1,
-                CommandCode = 1,
-                Payload = new byte[] { 1, 2, 3 }
-            };
+            var brickMsg = (SmartBrickMessage)message;
+           
+            var webSocketMessages = new List<WebSocketMessage>();
 
-
-            string socket = null;
-            try {
-                socket = WebSocketEndpoint.SocketDict.First().Key;
-            } catch (Exception ex)
+            foreach (var socketId in WebSocketEndpoint.SocketDict.Keys)
             {
-            }
+                var msg = JsonConvert.SerializeObject(brickMsg);
 
-            WebSocketMessage webMessage = null;
-            if (socket != null)
-            {
-                webMessage = new WebSocketMessage()
+                webSocketMessages.Add(new WebSocketMessage()
                 {
-                    SocketSessionID = socket,
-                    Message = "Test Unix!"
-                };
+                    SocketSessionID = socketId,
+                    Message = msg
+                });
             }
-                      
 
-
-            var result = new ProcessingResult(null, new WebSocketMessage[] { webMessage });
+            var result = new ProcessingResult(null, webSocketMessages);
 
             return result;
         }

@@ -15,6 +15,8 @@ namespace SmartHomeServer
         {
             if (message.Source == MessageSource.WebSocket)
             {
+                var wsMsg = (WebSocketMessage)message;
+
                 return new EchoModule();
             }
             if (message.Source == MessageSource.UnixSocket)

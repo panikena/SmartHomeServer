@@ -214,6 +214,7 @@ namespace SmartHomeServer
                 }
                 catch (Exception ex)
                 {
+                    _receiving = false;
                     log.Error("Error while listening to socket", ex);
                 }
             }

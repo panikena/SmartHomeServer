@@ -11,7 +11,7 @@ namespace SmartHomeServer.ProcessingModules
 
         public IProcessingResult ProcessCommand(IMessage command)
         {
-            log.Info("Processing in EchoModule");
+            //log.Info("Processing in EchoModule");
 
             var webSocketMessage = (WebSocketMessage)command;
 
@@ -24,6 +24,11 @@ namespace SmartHomeServer.ProcessingModules
                 Payload = null,
                 PipeAddress = GetPipeAddress(smartBrickId)
             };
+
+            var wsResponse = new {
+                WidgetId 
+            }
+
 
             var result = new ProcessingResult(new SmartBrickMessage[] { brickMsg }, new WebSocketMessage[] { webSocketMessage });
             return result;

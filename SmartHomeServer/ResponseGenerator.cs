@@ -35,7 +35,14 @@ namespace SmartHomeServer
 				await sendingTask;
 			}
 #else
-			var sendingTasks = new Task[2];
+            var sendingTasks = new Task[2] { Task.FromResult(true), Task.FromResult(true) };
+
+            if (!UnixSocket.IsRunning)
+            {
+                log.Error("Unix socket is not running!");
+            }
+
+
 
 			if (result.SmartBrickMessages != null && UnixSocket.IsRunning)
 			{
@@ -68,8 +75,10 @@ namespace SmartHomeServer
         private async Task SendWebSocketMessages(IEnumerable<WebSocketMessage> messages)
         {
             var tasks = new List<Task>();
+            var msg = messages.Where(x => x != null && x.SocketSessionID != null);
+            //log.Info("WS list: " + string.Join("", msg.Select(x => x.SocketSessionID)));
 
-            foreach (var message in messages.Where(x => x != null && x.SocketSessionID != null))
+            foreach (var message in msg)
             {
                 tasks.Add(Task.Run(() => WebSocket.SendMessage(message.SocketSessionID, message.Message)));
             }
