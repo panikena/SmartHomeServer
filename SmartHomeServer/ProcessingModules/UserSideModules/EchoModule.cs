@@ -25,9 +25,9 @@ namespace SmartHomeServer.ProcessingModules
                 PipeAddress = GetPipeAddress(smartBrickId)
             };
 
-            var wsResponse = new {
-                WidgetId 
-            }
+            //var wsResponse = new {
+            //    WidgetId 
+            //}
 
 
             var result = new ProcessingResult(new SmartBrickMessage[] { brickMsg }, new WebSocketMessage[] { webSocketMessage });

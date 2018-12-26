@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SuperSocket.Common, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.Common.dll</HintPath>
@@ -82,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessor.cs" />
+    <Compile Include="Enums\SmartBrickCommands\RelayDriverCommands.cs" />
     <Compile Include="Enums\WidgetType.cs" />
     <Compile Include="Exceptions\NoModuleFoundException.cs" />
     <Compile Include="Messages\CommandSource.cs" />
@@ -90,9 +92,12 @@
     <Compile Include="Messages\WebSocketMessage.cs" />
     <Compile Include="IProcessingResult.cs" />
     <Compile Include="Messages\WebSocketPayload.cs" />
-    <Compile Include="ProcessingModules\EchoModule.cs" />
+    <Compile Include="Messages\WidgetMessages\LightSwitchWidgetMsg.cs" />
+    <Compile Include="ProcessingModules\SystemSideModules\ACDetectorModule.cs" />
+    <Compile Include="ProcessingModules\UserSideModules\EchoModule.cs" />
     <Compile Include="ProcessingModules\IModule.cs" />
-    <Compile Include="ProcessingModules\TestUnixModule.cs" />
+    <Compile Include="ProcessingModules\UserSideModules\LightSwitchModule.cs" />
+    <Compile Include="ProcessingModules\SystemSideModules\TestUnixModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseGenerator.cs" />
