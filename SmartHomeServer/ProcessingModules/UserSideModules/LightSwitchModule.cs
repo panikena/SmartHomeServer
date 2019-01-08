@@ -9,7 +9,7 @@ using SmartHomeServer.Enums.SmartBrickCommands;
 using Newtonsoft.Json;
 using SmartHomeServer.Messages.WidgetMessages;
 
-namespace SmartHomeServer.ProcessingModules
+namespace SmartHomeServer.ProcessingModules.UserSideModules
 {
     public class LightSwitchModule : IModule
     {

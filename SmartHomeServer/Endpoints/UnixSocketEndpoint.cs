@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 using SuperSocket.SocketBase;
+using System.IO;
 
 namespace SmartHomeServer
 {
@@ -171,11 +172,23 @@ namespace SmartHomeServer
                 _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();                
                 _socket.Dispose();
-                log.Info("Unix socket was closed");
+                log.Info("Unix socket was closed");           
             }
             catch (Exception ex)
             {
                 log.Error("Unix socket failed to close", ex);
+            }
+
+            try
+            {
+                if (File.Exists(SocketAddress))
+                {
+                    File.Delete(SocketAddress);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
             }
         }
 

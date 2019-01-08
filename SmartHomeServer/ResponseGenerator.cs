@@ -42,8 +42,6 @@ namespace SmartHomeServer
                 log.Error("Unix socket is not running!");
             }
 
-
-
 			if (result.SmartBrickMessages != null && UnixSocket.IsRunning)
 			{
 				sendingTasks[0] = SendUnixSocketMessages(result.SmartBrickMessages);

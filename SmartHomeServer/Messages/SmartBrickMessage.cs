@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SmartHomeServer.Enums;
 using System;
 using System.IO;
 

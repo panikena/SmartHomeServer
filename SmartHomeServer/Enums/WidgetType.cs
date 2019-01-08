@@ -11,10 +11,11 @@ namespace SmartHomeServer.Enums
     [JsonConverter(typeof(StringEnumConverter))]
     public enum WidgetType
     {
-        WarmFloor,
+        WarmFloor = 1, 
         LightSwitch,
         Thermo,
-        Light3ColorPicker,
+        ColorPickerSwitch,
+        Test
 
     }
 }

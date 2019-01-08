@@ -19,7 +19,6 @@ namespace SmartHomeServer.ProcessingModules.SystemSideModules
 
             var brickMsg = (SmartBrickMessage)command;
 
-
             var payload = brickMsg.Payload;
 
             var webSocketMessages = new List<WebSocketMessage>();
@@ -34,12 +33,12 @@ namespace SmartHomeServer.ProcessingModules.SystemSideModules
                     {
                         WidgetID = widgetId,
                         SocketSessionID = socketId,
-                        Message = msg
+                       // Message = msg
                     });
                 }
             }
             
-            //Update UI with the current state of AC channels
+            //Update UI of each client with the current state of AC channels
             var result = new ProcessingResult(null, webSocketMessages);
             return result;
         }

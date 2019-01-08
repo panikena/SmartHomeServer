@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Mono.Unix;
 using System;
+using System.IO;
 using System.ServiceProcess;
 using System.Threading;
 
@@ -43,36 +44,7 @@ namespace SmartHomeServer
 
             WebSocketEndpoint.Open();
 
-            log.Info("SmartHomeDaemon was started");
-
-            // Catch SIGINT and SIGUSR1
-            //UnixSignal[] signals = new UnixSignal[] {
-            //    //SIGINT interrupts on Ctrl+C, this is for console debugging
-            //    new UnixSignal (Mono.Unix.Native.Signum.SIGINT),
-            //    new UnixSignal (Mono.Unix.Native.Signum.SIGTERM),
-            //};
-
-            ////Run this thread to handle POSIX signals and terminate gracefully
-            //Thread signalThread = new Thread(delegate ()
-            //{
-            //    int index;
-            //    while (true)
-            //    {
-            //        // Wait for a signal to be delivered
-            //        //-1 means "wait indefinitely"
-            //        index = UnixSignal.WaitAny(signals, -1);
-
-            //        Mono.Unix.Native.Signum signal = signals[index].Signum;
-
-            //        if (signal == Mono.Unix.Native.Signum.SIGTERM || signal == Mono.Unix.Native.Signum.SIGINT)
-            //        {
-            //            OnStop();
-            //        }
-                    
-            //    }
-            //});
-
-            //signalThread.Start();
+            log.Info("SmartHomeDaemon was started");           
         }
 
 
@@ -84,7 +56,17 @@ namespace SmartHomeServer
             WebSocketEndpoint.Close();
 
             log.Info("SmartHomeDaemon was stopped");
-
+            try
+            {
+                if (File.Exists("/tmp/SmartHomeServer.exe.lock"))
+                {
+                    File.Delete("/tmp/SmartHomeServer.exe.lock");
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message);
+            }
             Environment.Exit(0);
         }
 

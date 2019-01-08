@@ -1,4 +1,6 @@
-﻿namespace SmartHomeServer.Messages
+﻿using SmartHomeServer.Enums;
+
+namespace SmartHomeServer.Messages
 {
     public interface IMessage
     {

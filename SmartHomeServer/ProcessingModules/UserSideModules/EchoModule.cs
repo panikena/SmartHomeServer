@@ -2,7 +2,7 @@
 using SmartHomeServer.Messages;
 using System;
 
-namespace SmartHomeServer.ProcessingModules
+namespace SmartHomeServer.ProcessingModules.UserSideModules
 {
     public class EchoModule : IModule
     {

@@ -83,17 +83,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessor.cs" />
+    <Compile Include="Enums\MessageSource.cs" />
+    <Compile Include="Enums\SmartBrickCommands\LEDDriverCommands.cs" />
     <Compile Include="Enums\SmartBrickCommands\RelayDriverCommands.cs" />
+    <Compile Include="Enums\SmartBrickCommands\ThermoCommands.cs" />
+    <Compile Include="Enums\SmartBrickCommands\WarmFloorCommands.cs" />
     <Compile Include="Enums\WidgetType.cs" />
     <Compile Include="Exceptions\NoModuleFoundException.cs" />
-    <Compile Include="Messages\CommandSource.cs" />
     <Compile Include="Messages\IMessage.cs" />
     <Compile Include="Messages\SmartBrickMessage.cs" />
     <Compile Include="Messages\WebSocketMessage.cs" />
     <Compile Include="IProcessingResult.cs" />
     <Compile Include="Messages\WebSocketPayload.cs" />
+    <Compile Include="Messages\WidgetMessages\ColorPickerSwitchWidgetMsg.cs" />
     <Compile Include="Messages\WidgetMessages\LightSwitchWidgetMsg.cs" />
+    <Compile Include="Messages\WidgetMessages\TestWidgetMsg.cs" />
+    <Compile Include="Messages\WidgetMessages\ThermoWidgetMsg.cs" />
+    <Compile Include="Messages\WidgetMessages\WarmFloorWidgetMsg.cs" />
+    <Compile Include="ProcessingModules\BaseModule.cs" />
     <Compile Include="ProcessingModules\SystemSideModules\ACDetectorModule.cs" />
+    <Compile Include="ProcessingModules\SystemSideModules\ThermoModule.cs" />
+    <Compile Include="ProcessingModules\SystemSideModules\WarmFloorModule.cs" />
+    <Compile Include="ProcessingModules\UserSideModules\ClimateModule.cs" />
+    <Compile Include="ProcessingModules\UserSideModules\ColorPickerSwitchModule.cs" />
     <Compile Include="ProcessingModules\UserSideModules\EchoModule.cs" />
     <Compile Include="ProcessingModules\IModule.cs" />
     <Compile Include="ProcessingModules\UserSideModules\LightSwitchModule.cs" />

@@ -33,7 +33,7 @@ namespace SmartHomeServer
         {
             try
             {
-                log.Info("Processing command from " + command.Source.ToString());
+                //log.Info("Processing command from " + command.Source.ToString());
                 var module = StrategyFactory.GetProcessingModule(command);
                 IProcessingResult result = module.ProcessCommand(command);
                 await ResponseGenerator.SendResponse(result);
