@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="Enums\MessageSource.cs" />
+    <Compile Include="Enums\SmartBrickCommands\DimmerCommands.cs" />
     <Compile Include="Enums\SmartBrickCommands\LEDDriverCommands.cs" />
     <Compile Include="Enums\SmartBrickCommands\RelayDriverCommands.cs" />
     <Compile Include="Enums\SmartBrickCommands\ThermoCommands.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Messages\WidgetMessages\WarmFloorWidgetMsg.cs" />
     <Compile Include="ProcessingModules\BaseModule.cs" />
     <Compile Include="ProcessingModules\SystemSideModules\ACDetectorModule.cs" />
+    <Compile Include="ProcessingModules\SystemSideModules\DimmerModule.cs" />
     <Compile Include="ProcessingModules\SystemSideModules\ThermoModule.cs" />
     <Compile Include="ProcessingModules\SystemSideModules\WarmFloorModule.cs" />
     <Compile Include="ProcessingModules\UserSideModules\ClimateModule.cs" />

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SmartHomeServer.Enums.SmartBrickCommands
 {
-    public enum LEDDriverCommands
+    public enum DimmerCommands
     {
-        NOOP,
-        TURN_ON,
-        TURN_OFF,
-        UPDATE_COLOR,
+        NOOP = 0,
+        PRESSED_BTN = 1, 
+        ROTATED = 2,
+        UPDATE = 3
     }
 }

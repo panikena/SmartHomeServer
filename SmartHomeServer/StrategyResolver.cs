@@ -36,6 +36,11 @@ namespace SmartHomeServer
                 {
                     return new ThermoModule();
                 }
+                if (smartBrickMessage.SmartBrickID == 40)
+                {
+                    return new DimmerModule();
+                }
+
                 return new TestUnixModule();
             }
             throw new Exception("No module found");
