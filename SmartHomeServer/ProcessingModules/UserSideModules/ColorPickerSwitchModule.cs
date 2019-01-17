@@ -49,6 +49,7 @@ namespace SmartHomeServer.ProcessingModules.UserSideModules
             dimmerMsg.SmartBrickID = 40;
             dimmerMsg.CommandCode = (byte)DimmerCommands.UPDATE;
             dimmerMsg.Payload = ledDriverMsg.Payload;
+            dimmerMsg.PipeAddress = GetPipeAddress(dimmerMsg.SmartBrickID);
 
 
             var wsMsgList = new List<WebSocketMessage>();

@@ -27,6 +27,10 @@ namespace SmartHomeServer
                 {
                     return new LightSwitchModule();
                 }
+                if (webSocketMessage.WidgetType == WidgetType.WarmFloor)
+                {
+                    return new WarmFloorWebModule();
+                }
                 return new EchoModule();
             }
             if (message.Source == MessageSource.UnixSocket)
@@ -39,6 +43,10 @@ namespace SmartHomeServer
                 if (smartBrickMessage.SmartBrickID == 40)
                 {
                     return new DimmerModule();
+                }
+                if (smartBrickMessage.SmartBrickID == 50)
+                {
+                    return new WarmFloorModule();
                 }
 
                 return new TestUnixModule();

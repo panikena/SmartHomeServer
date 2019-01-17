@@ -29,6 +29,7 @@ namespace SmartHomeServer.ProcessingModules.SystemSideModules
                 warmFloorWidget.CurrentTemperature = BitConverter.ToSingle(smartBrickMessage.Payload, 0);
                 warmFloorWidget.TargetTemperature = BitConverter.ToSingle(smartBrickMessage.Payload, 4);
                 warmFloorWidget.Hysteresis = BitConverter.ToSingle(smartBrickMessage.Payload, 8);
+                warmFloorWidget.IsTurnedOn = BitConverter.ToBoolean(smartBrickMessage.Payload, 12);
             }
 
             List<WebSocketMessage> list = new List<WebSocketMessage>();
@@ -37,7 +38,7 @@ namespace SmartHomeServer.ProcessingModules.SystemSideModules
             {
                 WebSocketPayload webSocketPayload = new WebSocketPayload
                 {
-                    WidgetID = 1,
+                    WidgetID = 11,
                     WidgetType = WidgetType.WarmFloor,
                     Message = JObject.Parse(JsonConvert.SerializeObject(warmFloorWidget))
                 };

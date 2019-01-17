@@ -112,6 +112,7 @@
     <Compile Include="ProcessingModules\IModule.cs" />
     <Compile Include="ProcessingModules\UserSideModules\LightSwitchModule.cs" />
     <Compile Include="ProcessingModules\SystemSideModules\TestUnixModule.cs" />
+    <Compile Include="ProcessingModules\UserSideModules\WarmFloorWebModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseGenerator.cs" />

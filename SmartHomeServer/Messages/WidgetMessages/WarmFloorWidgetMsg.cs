@@ -12,5 +12,6 @@ namespace SmartHomeServer.Messages.WidgetMessages
         public float CurrentTemperature { get; set; }
         public float TargetTemperature { get; set; }
         public float Hysteresis { get; set; }
+        public string Action { get; set; }
     }
 }
